@@ -23,11 +23,16 @@ module.exports = {
     extensions: ['.js', '.vue', '.json'],
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
+      'snapsvg': 'snapsvg/dist/snap.svg.js',
       '@': resolve('src'),
     }
   },
   module: {
     rules: [
+      {
+        test: require.resolve('snapsvg/dist/snap.svg.js'),
+        use: 'imports-loader?this=>window,fix=>module.exports=0',
+      },
       {
         test: /\.vue$/,
         loader: 'vue-loader',
@@ -45,6 +50,14 @@ module.exports = {
           limit: 10000,
           name: utils.assetsPath('img/[name].[hash:7].[ext]')
         }
+      },
+      {
+        test: /\.css$/,
+        loader: ["vue-style-loader", "css-loader"]
+      },
+      {
+        test: /\.less$/,
+        loader: ["vue-style-loader", "css-loader", "less-loader"]
       },
       {
         test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
