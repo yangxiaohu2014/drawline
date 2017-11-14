@@ -14,6 +14,7 @@ export default {
     return {
       paper: null,
       drawing: false,
+      newLineCreated: false,
       points: [],
       baseLine: null,
       lineFiltedByDis: null,
@@ -27,17 +28,25 @@ export default {
   },
   methods: {
     onMouseDown(e) {
-      this.restartDraw([e.offsetX, e.offsetY])
+      this.restart([e.offsetX, e.offsetY])
     },
 
     onMouseMove(e) {
       if (!this.drawing) return false
-
-      this.append([e.offsetX, e.offsetY])
+      if (!this.newLineCreated) {
+        this.points.push([e.offsetX, e.offsetY])
+        this.createBaseLine()
+      } else {
+        this.append([e.offsetX, e.offsetY])
+      }
     },
 
     onMouseUp(e) {
+      if (!this.newLineCreated) return false
+
       this.drawing = false
+      this.newLineCreated = false
+
       this.append([e.offsetX, e.offsetY])
       // this.drawLineFilteredByDis()
       // this.drawLineFilteredByAngle()
@@ -65,17 +74,22 @@ export default {
     append(point = []) {
       let lastPathData = this.baseLine.attr('d')
 
-      this.points.push(...point)
+      this.points.push(point)
       this.baseLine.attr('d', `${lastPathData} L${point[0]} ${point[1]}`)
     },
 
-    restartDraw(point = []) {
-      this.count++
-      this.drawing = true
-      this.points = point
-      this.baseLine = this.paper.path(points2Path([...point, ...point])).attr({fill: "none", stroke: "green"}).addClass(`baseLine-${this.count}`)
+    createBaseLine() {
+      this.baseLine = this.paper.path(points2Path(this.points)).attr({fill: "none", stroke: "green"}).addClass(`baseLine-${this.count}`)
 
+      this.newLineCreated = true
       console.log(this.baseLine.attr('d'))
+    },
+
+    restart(point = []) {
+      this.count++
+      this.points = [point]
+      this.drawing = true
+      this.newLineCreated = false
     }
   }
 

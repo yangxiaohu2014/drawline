@@ -1,31 +1,12 @@
-const defaultZero = 1e-6 //小于此值认为是零值
-const maxDisError = 1.5 //最大距离误差
-const maxAngleError = 1.5 //最大角度误差
+import {flattenDeep} from 'lodash'
+import {defaultZero, maxDisError, maxAngleError} from './config'
+import {vector, model} from './vector'
+
 const PI = Math.PI
 const sqrt = Math.sqrt
 const pow = Math.pow
 const abs = Math.abs
 const acos = Math.acos
-
-/**
- * [model 求向量模]
- * @param  {Array}  vector [向量]
- * @return {[num]}        [向量模即长度]
- */
-function model(vector = []) {
-	return sqrt(pow(vector[0], 2) + pow(vector[1], 2))
-}
-
-/**
- * [vector 通过点求向量]
- * @param  {Array}  points [两个点坐标]
- * @return {[Array]}       [向量]
- */
-function vector(point1 = [], point2 = []) {
-	let points = point1.concat(point2)
-
-	return [points[2] - points[0], points[3] - points[1]]
-}
 
 /**
  * [disOfPoint2Line 点到直线具体]
@@ -41,6 +22,7 @@ function vector(point1 = [], point2 = []) {
  *   AB x AC = (x2 - x1) * (y3 -y1) - (y2 - y1) * (x3 - x2)
  */
 export function disOfPoint2Line(points = []) {
+	points = flattenDeep(points)
 	if (points.length < 6) return 0
 
 	let AB = [points[2] - points[0], points[3] - points[1]]
@@ -60,6 +42,7 @@ export function disOfPoint2Line(points = []) {
  * @return {[num]}        [夹角]
  */
 export function angleOfLines(points = []) {
+	points = flattenDeep(points)
 	if (points.length !== 6 && points.length !== 8) return 0
 
 	let AB = [points[2] - points[0], points[3] - points[1]]
@@ -76,14 +59,14 @@ export function angleOfLines(points = []) {
 }
 
 export function filterPoints(points = [], opts = {errorType: 'angle'}) {
-	let p = points.slice(0)
+	let p = flattenDeep(points)
 	let reservedPoints = p.splice(0, 2)
 	// 返回true过滤，否则保留
-	let test = function(points = [], opts) {
+	let test = function(ps = [], opts) {
 		if (opts.errorType === 'angle') {
-			return abs(angleOfLines(points)) < opts.maxAngleError
+			return abs(angleOfLines(ps)) < opts.maxAngleError
 		} else if (opts.errorType === 'dis') {
-			return disOfPoint2Line(points) < opts.maxDisError
+			return disOfPoint2Line(ps) < opts.maxDisError
 		}
 	}
 
@@ -143,6 +126,7 @@ export function filterPoints(points = [], opts = {errorType: 'angle'}) {
 }
 
 export function points2Path(points = []) {
+	points = flattenDeep(points)
 	let path = `M${points[0]} ${points[1]}`
 
 	for (let i = 2, len = points.length; i < len; i += 2) {
