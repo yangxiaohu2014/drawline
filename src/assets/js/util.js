@@ -21,8 +21,8 @@ const acos = Math.acos
  *   d = (AB x AC)/|AB|
  *   AB x AC = (x2 - x1) * (y3 -y1) - (y2 - y1) * (x3 - x2)
  */
-export function disOfPoint2Line(points = []) {
-	points = flattenDeep(points)
+export function disOfPoint2Line(linePoints = [], point = []) {
+	let points = flattenDeep(linePoints.concat(point))
 	if (points.length < 6) return 0
 
 	let AB = [points[2] - points[0], points[3] - points[1]]
@@ -34,6 +34,11 @@ export function disOfPoint2Line(points = []) {
 	} else {
 		return ABxAC / model(AB)
 	}
+}
+
+// 点对点镜像点
+export function mirrorPoint(centerPoint = [], originPoint = []) {
+	return [2 * centerPoint[0] - originPoint[0], 2 * centerPoint[1] - originPoint[1]]
 }
 
 /**

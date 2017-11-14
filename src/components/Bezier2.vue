@@ -7,6 +7,7 @@
 <script>
 import Snap from 'snapsvg'
 import {filterPoints, points2Path} from '@/assets/js/util'
+import {fit, fitWithAngleFilter} from '@/assets/js/bezier2'
 
 export default {
   name: 'svg',
@@ -17,9 +18,7 @@ export default {
       newLineCreated: false,
       points: [],
       baseLine: null,
-      lineFiltedByDis: null,
-      lineFiltedByAngle: null,
-      lineFiltedByDisAndAngle: null,
+      baseBezier2: null,
       count: 0,
     }
   },
@@ -47,28 +46,20 @@ export default {
       this.drawing = false
       this.newLineCreated = false
 
-      this.append([e.offsetX, e.offsetY])
-      // this.drawLineFilteredByDis()
-      // this.drawLineFilteredByAngle()
-      this.drawLineFilteredByDisAndAngle()
+      // this.drawBaseBezier2()
+      this.drawFitWithAngleBezier2()
     },
 
-    drawLineFilteredByDis() {
-      let filteredPoints = filterPoints(this.points, {errorType: 'dis', maxDisError: 1})
+    drawBaseBezier2() {
+      let fittedPath = fit(this.points)
 
-      this.lineFiltedByDis = this.paper.path(points2Path(filteredPoints)).attr({fill: "none", stroke: "red"}).addClass(`drawLineFilteredByDis-${this.count}`)
+      this.baseBezier2 = this.paper.path(fittedPath).attr({fill: "none", stroke: "red"}).addClass(`baseBezier2 baseBezier2-${this.count}`)
     },
 
-    drawLineFilteredByAngle() {
-      let filteredPoints = filterPoints(this.points, {errorType: 'angle', maxAngleError: 5})
+    drawFitWithAngleBezier2() {
+      let fittedPath = fitWithAngleFilter(this.points, 30)
 
-      this.lineFiltedByAngle = this.paper.path(points2Path(filteredPoints)).attr({fill: "none", stroke: "yellow"}).addClass(`lineFiltedByAngle-${this.count}`)
-    },
-
-    drawLineFilteredByDisAndAngle() {
-      let filteredPoints = filterPoints(this.points, {errorType: 'both', maxAngleError: 30, maxDisError: 2})
-
-      this.lineFiltedByDisAndAngle = this.paper.path(points2Path(filteredPoints)).attr({fill: "none", stroke: "yellow"}).addClass(`lineFiltedByDisAndAngle-${this.count}`)
+      this.baseBezier2 = this.paper.path(fittedPath).attr({fill: "none", stroke: "blue"}).addClass(`baseBezier2 baseBezier2-${this.count}`)
     },
 
     append(point = []) {
@@ -79,7 +70,7 @@ export default {
     },
 
     createBaseLine() {
-      this.baseLine = this.paper.path(points2Path(this.points)).attr({fill: "none", stroke: "green"}).addClass(`baseLine-${this.count}`)
+      this.baseLine = this.paper.path(points2Path(this.points)).attr({fill: "none", stroke: "green"}).addClass(`baseLine baseLine-${this.count}`)
 
       this.newLineCreated = true
       console.log(this.baseLine.attr('d'))

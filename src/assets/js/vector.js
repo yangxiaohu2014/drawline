@@ -28,7 +28,13 @@ export function model(vector = []) {
 export function vector(...points) {
 	points = flattenDeep(points)
 
-	return [points[2] - points[0], points[3] - points[1]]
+	if (points.length === 2) {
+		return points
+	} else if (points.length === 4) {
+		return [points[2] - points[0], points[3] - points[1]]
+	} else {
+		console.warn('unexpected points ', points)
+	}
 }
 
 /**
@@ -53,14 +59,12 @@ export function unit(...points) {
  * @return {[Array]}         [返回数组]
  */
 export function add(vector1 = [], vector2 = []) {
-	if (!isNaN(+vector2)) {
-		let num = +vector2
-		vector2 = [num, num]
-	}
-
 	return [vector1[0] + vector2[0], vector1[1] + vector2[1]]
 }
 
+export function minus(vector1 = [], vector2 = []) {
+	return [vector1[0] - vector2[0], vector1[1] - vector2[1]]
+}
 /**
  * [scale 向量缩放，向量乘常数]
  * @param  {Array}  vector [description]
