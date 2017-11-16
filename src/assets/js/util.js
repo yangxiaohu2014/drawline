@@ -63,6 +63,39 @@ export function angleOfLines(points = []) {
 	}
 }
 
+    /**
+     * [sweepAngle 向量1逆时针旋转至向量2扫过的角度]
+     * @param  {Array} vector1
+     * @param  {Array} vector2
+     * @example
+     *
+     *    var s = sweepAngle([-2,0], [0,1]); //向量(-2, 0)逆时针转至向量(0,1)扫过的角度
+     *    // 返回: 270
+     *
+     * @return {[Num]}              [扫过的角度，角度制]
+     */
+export function sweepAngle(vector1=[], vector2=[]) {
+    var l1 = Math.sqrt(vector1[0] * vector1[0] + vector1[1] * vector1[1]);
+    var l2 = Math.sqrt(vector2[0] * vector2[0] + vector2[1] * vector2[1]);
+    var pi = Math.PI;
+    var ang1; 
+    var ang2;
+    var ang;
+
+    ang1 = Math.acos(vector1[0] / l1);
+    ang1 = vector1[1] > 0 ? ang1 : pi * 2 - ang1;
+
+    ang2 = Math.acos(vector2[0] / l2);
+    ang2 = vector2[1] > 0 ? ang2 : pi * 2 - ang2;
+
+    ang = ang2 - ang1;
+    if (ang < 0) {
+        ang = pi * 2 + ang;
+    }
+    
+    return ang * 180 / pi; //保留两位小数
+}
+
 export function filterPoints(points = [], opts = {errorType: 'angle'}) {
 	let p = flattenDeep(points)
 	let reservedPoints = p.splice(0, 2)

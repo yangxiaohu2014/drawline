@@ -10,6 +10,8 @@ const sqrt = Math.sqrt
 const pow = Math.pow
 const abs = Math.abs
 const acos = Math.acos
+const atan = Math.atan
+const round = Math.round
 
 /**
  * [model 求向量模]
@@ -92,5 +94,47 @@ export function multiply(vector1 = [], vector2 = []) {
  */
 export function cross(vector1 = [], vector2 = []) {
 	return vector1[0] * vector2[1] - vector1[1] * vector2[0]
+}
+
+/**
+ * [angle 向量相对x轴正向的夹角，逆时针方向为正，顺时针方向为负]
+ * @param  {Array}  vector [description]
+ * @return {[num]}        [description]
+ */
+
+export function angle(vector = []) {
+	if (abs(vector[0]) < defaultZero) {
+		if (abs(vector[1]) < defaultZero) {
+			return 0
+		} else {
+			return vector[1] > 0 ? 90 : -90
+		}
+	}
+
+	let ang = atan(vector[1] / vector[0]) * 180 / PI
+
+	if (vector[0] < 0) {
+		ang = ang > 0 ? (ang - 180) : (180 - ang)
+	}
+
+	return ang
+}
+
+/**
+ * [sweepAngle 向量vector1到向量vector2的夹角]
+ * @param  {Array}  vector1 [description]
+ * @param  {Array}  vector2 [description]
+ * @return {[num]}         [description]
+ */
+export function sweepAngle(vector1 = [], vector2 = []) {
+	let ang = round(angle(vector2) - angle(vector1))
+
+	if (ang < 180) {
+		return 2 * 180 + ang
+	} else if (ang > 180) {
+		return ang - 2 * 180
+	}
+
+	return ang
 }
 

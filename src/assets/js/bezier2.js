@@ -130,7 +130,7 @@ export function fitWithAngleFilter(points = [], error) {
 
 		if (
 			// (averAngle && angel > minAngleError && (angel - averAngle) / averAngle > 4) ||  
-			!test([p.slice(stop, stop + 4), p.slice(i, i + 4)], error) || 
+			!test([p.slice(stop, stop + 4), p.slice(i, i + 4)], error * 0.5) || 
 			!test(p.slice(i - 2, i + 4), error)
 		) {
 			let convexP = findConvexPoint(p.slice(stop, i + 2))

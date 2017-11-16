@@ -57,7 +57,7 @@ export default {
     },
 
     drawFitWithAngleBezier2() {
-      let fittedPath = fitWithAngleFilter(this.points, 30)
+      let fittedPath = fitWithAngleFilter(this.points, 60)
 
       this.baseBezier2 = this.paper.path(fittedPath).attr({fill: "none", stroke: "blue"}).addClass(`baseBezier2 baseBezier2-${this.count}`)
     },
